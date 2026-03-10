@@ -1,9 +1,53 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Starfield from "@/components/Starfield";
 import PageNavigation from "@/components/PageNavigation";
 import { Calculator, ChevronDown, ChevronUp, Sparkles, Bot } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { playPopSound } from "@/hooks/useAudio";
+import "katex/dist/katex.min.css";
+import { InlineMath, BlockMath } from "react-katex";
+
+// Helper function to render text with LaTeX
+const MathText = ({ text, className = "" }: { text: string; className?: string }) => {
+  const elements = useMemo(() => {
+    const result: React.ReactNode[] = [];
+    let key = 0;
+    
+    // Split by block math ($$...$$) first
+    const blockParts = text.split(/(\$\$[^$]+\$\$)/g);
+    
+    blockParts.forEach((part) => {
+      if (part.startsWith("$$") && part.endsWith("$$")) {
+        // Block math
+        const math = part.slice(2, -2).trim();
+        result.push(
+          <span key={key++} className="mx-1">
+            <InlineMath math={math} />
+          </span>
+        );
+      } else if (part) {
+        // Check for inline math ($...$)
+        const inlineParts = part.split(/(\$[^$]+\$)/g);
+        inlineParts.forEach((inlinePart) => {
+          if (inlinePart.startsWith("$") && inlinePart.endsWith("$")) {
+            const math = inlinePart.slice(1, -1).trim();
+            result.push(
+              <span key={key++} className="mx-0.5">
+                <InlineMath math={math} />
+              </span>
+            );
+          } else if (inlinePart) {
+            result.push(<span key={key++}>{inlinePart}</span>);
+          }
+        });
+      }
+    });
+    
+    return result;
+  }, [text]);
+  
+  return <span className={className}>{elements}</span>;
+};
 
 type Difficulty = "Mudah" | "Sedang" | "Sulit";
 type QuestionType = "PG" | "PG Kompleks" | "Benar/Salah";
@@ -472,9 +516,9 @@ const SoalCard = ({ soal }: { soal: Question }) => {
 
         {/* Question */}
         <div className="mb-5">
-          <p className="text-foreground font-body text-sm md:text-base leading-relaxed whitespace-pre-line">
-            {soal.question}
-          </p>
+          <div className="text-foreground font-body text-sm md:text-base leading-relaxed whitespace-pre-line">
+            <MathText text={soal.question} />
+          </div>
         </div>
 
         {/* Options for PG */}
@@ -486,7 +530,9 @@ const SoalCard = ({ soal }: { soal: Question }) => {
                 className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/30
                   hover:bg-muted/50 hover:border-primary/30 transition-all duration-200"
               >
-                <span className="text-sm text-foreground/90 font-body">{option}</span>
+                <span className="text-sm text-foreground/90 font-body">
+                  <MathText text={option} />
+                </span>
               </div>
             ))}
           </div>
@@ -501,7 +547,9 @@ const SoalCard = ({ soal }: { soal: Question }) => {
                 className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/30"
               >
                 <span className="text-xs font-bold text-muted-foreground">({idx + 1})</span>
-                <span className="text-sm text-foreground/90 font-body">{statement.text}</span>
+                <span className="text-sm text-foreground/90 font-body">
+                  <MathText text={statement.text} />
+                </span>
               </div>
             ))}
           </div>
@@ -512,7 +560,7 @@ const SoalCard = ({ soal }: { soal: Question }) => {
           <div className="mb-4 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
             <span className="text-xs font-semibold text-emerald-400">Jawaban: </span>
             <span className="text-sm text-emerald-300 font-body">
-              {Array.isArray(soal.correctAnswer) ? soal.correctAnswer.join(", ") : soal.correctAnswer}
+              <MathText text={Array.isArray(soal.correctAnswer) ? soal.correctAnswer.join(", ") : soal.correctAnswer} />
             </span>
           </div>
         )}
@@ -567,9 +615,9 @@ const SoalCard = ({ soal }: { soal: Question }) => {
             {/* Concept */}
             <div className="mb-4">
               <h5 className="text-xs font-semibold text-secondary mb-2 uppercase tracking-wide">Konsep</h5>
-              <p className="text-sm text-foreground/80 font-body leading-relaxed">
-                {soal.explanation.concept}
-              </p>
+              <div className="text-sm text-foreground/80 font-body leading-relaxed">
+                <MathText text={soal.explanation.concept} />
+              </div>
             </div>
 
             {/* Steps */}
@@ -582,7 +630,9 @@ const SoalCard = ({ soal }: { soal: Question }) => {
                       text-xs font-bold flex items-center justify-center mt-0.5">
                       {idx + 1}
                     </span>
-                    <p className="text-sm text-foreground/80 font-body leading-relaxed">{step}</p>
+                    <div className="text-sm text-foreground/80 font-body leading-relaxed">
+                      <MathText text={step} />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -592,7 +642,9 @@ const SoalCard = ({ soal }: { soal: Question }) => {
             {soal.explanation.formula && (
               <div className="p-4 rounded-lg bg-muted/40 border border-border/50">
                 <h5 className="text-xs font-semibold text-accent mb-2 uppercase tracking-wide">Rumus</h5>
-                <p className="text-sm text-foreground font-body">{soal.explanation.formula}</p>
+                <div className="text-sm text-foreground font-body">
+                  <MathText text={soal.explanation.formula} />
+                </div>
               </div>
             )}
           </div>
@@ -675,19 +727,6 @@ const BankSoalBilanganBulatPage = () => {
           </button>
         </div>
       </div>
-
-      {/* MathJax Script */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.MathJax = {
-              tex: { inlineMath: [['$$', '$$']] },
-              svg: { fontCache: 'global' }
-            };
-          `
-        }}
-      />
-      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async />
     </div>
   );
 };
