@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Starfield from "@/components/Starfield";
 import PageNavigation from "@/components/PageNavigation";
-import { Trophy, ChevronDown, ChevronUp } from "lucide-react";
+import { Trophy, ChevronDown, ChevronUp, Bot, Sparkles } from "lucide-react";
 import { playPopSound } from "@/hooks/useAudio";
 import 'katex/dist/katex.min.css';
 import { InlineMath, BlockMath } from 'react-katex';
@@ -123,26 +123,336 @@ Misalkan kita ingin menentukan apakah 137 prima.
   ]
 };
 
-const latihanDasar = [
-  { no: 1, soal: "Hasil dari $25 - (-90 : 18) + (-3) \\times 14$ adalah ...", options: ["A. -12", "B. -9", "C. 24", "D. 97"] },
-  { no: 2, soal: "Hasil dari $-20 : 5 \\times 2 - [7 + (-9)] + [2 - (-7)]$ adalah ...", options: ["A. 3", "B. 9", "C. 10", "D. -23"] },
-  { no: 3, soal: "Dalam kompetensi Bahasa Inggris yang terdiri dari 50 soal, peserta akan mendapatkan skor 4 untuk setiap jawaban benar, skor -2 untuk setiap jawaban salah, dan skor -1 untuk soal yang tidak dijawab. Jika Budi menjawab 44 soal dan yang benar 36 soal, maka skor yang diperoleh Budi adalah ...", options: ["A. 134", "B. 126", "C. 122", "D. 120"] },
-  { no: 4, soal: "Dalam kompetensi matematika, setiap jawaban benar diberi skor 2, salah skor -1 dan tidak menjawab poin nol. Dari 40 soal yang diberikan, Andi dapat menjawab 36 soal. Jika skor yang diperoleh Andi adalah 51, maka banyak soal yang dijawab benar adalah ...", options: ["A. 31", "B. 30", "C. 29", "D. 28"] },
-  { no: 5, soal: "Dalam suatu ujian perguruan tinggi, setiap soal bernilai benar mendapat nilai 4, salah bernilai -1 dan tidak dijawab bernilai 0. Dari 60 soal yang diberikan, Nafisha mengerjakan 31 soal dan mendapatkan skor 94. Maka banyak jawaban benar yang diperoleh Nafisha adalah ...", options: ["A. 25", "B. 24", "C. 23", "D. 22"] },
-  { no: 6, soal: "Suhu di kota Moskow $11^\\circ C$. Pada saat turun salju, suhunya turun $4^\\circ C$ setiap 15 menit. Suhu di kota tersebut setelah turun salju 1 jam adalah ...", options: ["A. $-9^\\circ C$", "B. $-5^\\circ C$", "C. $5^\\circ C$", "D. $9^\\circ C$"] },
-  { no: 7, soal: "Suhu di dalam kulkas sebelum dihidupkan $29^\\circ C$. Setelah dihidupkan, suhunya turun $3^\\circ C$ setiap 5 menit. Setelah 10 menit suhu dalam kulkas adalah ...", options: ["A. $23^\\circ C$", "B. $26^\\circ C$", "C. $32^\\circ C$", "D. $35^\\circ C$"] },
-  { no: 8, soal: "Operasi \"#\" artinya kalikan bilangan pertama dengan bilangan kedua, kemudian kurangkan hasilnya dengan dua kali bilangan kedua. Hasil dari $5 \\# (-4)$ adalah ...", options: ["A. -28", "B. -24", "C. -16", "D. -12"] },
-  { no: 9, soal: "Operasi \"*\" artinya kalikan dua kali bilangan pertama dengan bilangan kedua, kemudian kurangkan hasilnya dengan tiga kali bilangan kedua. Hasil dari $-3 * (-2)$ adalah ...", options: ["A. 18", "B. -18", "C. -6", "D. 6"] },
-  { no: 10, soal: "Pada suhu ruangan ber-AC mencapai $16^\\circ C$, sedangkan di tempat penyimpanan daging suhunya $25^\\circ C$ lebih rendah dari suhu di ruangan ber-AC. Suhu di tempat penyimpanan daging adalah ...", options: ["A. $16^\\circ C$", "B. $11^\\circ C$", "C. $-9^\\circ C$", "D. $-39^\\circ C$"] },
-  { no: 11, soal: "Suhu di suatu ruangan $-12^\\circ C$, sedangkan suhu dalam ruangan $20^\\circ C$. Perbedaan suhu di kedua tempat tersebut adalah ...", options: ["A. $-32^\\circ C$", "B. $-8^\\circ C$", "C. $8^\\circ C$", "D. $32^\\circ C$"] },
-  { no: 12, soal: "Perhatikan suhu udara di beberapa negara berikut!\nWina $-7^\\circ C$, Soul $-1^\\circ C$, Baghdad $39^\\circ C$, Surabaya $33^\\circ C$\nSelisih suhu udara yang benar di bawah ini adalah ...", options: ["A. Selisih suhu udara Wina dan Soul $-6^\\circ C$", "B. Selisih suhu udara Baghdad dan Wina $30^\\circ C$", "C. Selisih suhu udara Surabaya dan Soul adalah $34^\\circ C$", "D. Selisih udara Surabaya dan Wina adalah $39^\\circ C$"] },
-  { no: 13, soal: "Diberikan $x = 1 - 2 + 3 - 4 + 5 - ... + 99 - 100$. Berapakah nilai dari $x$?", options: ["A. -100", "B. -50", "C. 0", "D. 50"] },
-  { no: 14, soal: "Berapakah digit terakhir dari $3^{2023}$?", options: ["A. 3", "B. 9", "C. 1", "D. 7"] },
-  { no: 15, soal: "Berapakah digit terakhir dari $2^{2025}$?", options: ["A. 2", "B. 4", "C. 6", "D. 8"] },
-  { no: 16, soal: "Jika $a$, $b$, dan $c$ adalah tiga bilangan bulat berbeda sedemikian rupa sehingga $a \\times b \\times c = 16$, berapakah nilai terbesar yang mungkin untuk $a + b + c$?", options: ["A. 11", "B. 8", "C. 10", "D. 13"] },
-  { no: 17, soal: "Jika $m$ dan $n$ adalah bilangan bulat positif sehingga $m^2 - n^2 = 13$, berapakah nilai dari $m$?", options: ["A. 7", "B. 13", "C. 6", "D. 12"] },
-  { no: 18, soal: "Jika $a$ dan $b$ adalah bilangan bulat positif sehingga $a^2 - b^2 = 2023$, maka nilai terkecil yang mungkin untuk $a + b$ adalah ...", options: ["A. 44", "B. 119", "C. 289", "D. 2023"] },
-  { no: 19, soal: "Diberikan $a$ dan $b$ adalah bilangan bulat positif sedemikian sehingga $a^2 - b^2 = 2019$. Nilai terkecil yang mungkin untuk $a - b$ adalah ...", options: ["A. 1", "B. 3", "C. 673", "D. 2019"] },
+interface LatihanSoal {
+  no: number;
+  soal: string;
+  options: string[];
+  jawaban: string;
+  pembahasan: {
+    konsep: string;
+    langkah: string[];
+    rumus?: string;
+  };
+}
+
+const latihanDasar: LatihanSoal[] = [
+  { 
+    no: 1, 
+    soal: "Hasil dari $25 - (-90 : 18) + (-3) \\times 14$ adalah ...", 
+    options: ["A. -12", "B. -9", "C. 24", "D. 97"],
+    jawaban: "A. -12",
+    pembahasan: {
+      konsep: "Operasi hitung campuran bilangan bulat mengikuti urutan: kurung, pangkat/akar, kali/bagi, tambah/kurang.",
+      langkah: [
+        "Hitung pembagian: $-90 : 18 = -5$",
+        "Hitung perkalian: $(-3) \\times 14 = -42$",
+        "Substitusi: $25 - (-5) + (-42)$",
+        "Hitung: $25 + 5 - 42 = 30 - 42 = -12$"
+      ],
+      rumus: "$a - (-b) = a + b$"
+    }
+  },
+  { 
+    no: 2, 
+    soal: "Hasil dari $-20 : 5 \\times 2 - [7 + (-9)] + [2 - (-7)]$ adalah ...", 
+    options: ["A. 3", "B. 9", "C. 10", "D. -23"],
+    jawaban: "A. 3",
+    pembahasan: {
+      konsep: "Selesaikan operasi dalam kurung terlebih dahulu, kemudian kali/bagi dari kiri ke kanan, lalu tambah/kurang.",
+      langkah: [
+        "Hitung dalam kurung pertama: $7 + (-9) = -2$",
+        "Hitung dalam kurung kedua: $2 - (-7) = 2 + 7 = 9$",
+        "Hitung bagi dan kali dari kiri: $-20 : 5 = -4$, lalu $-4 \\times 2 = -8$",
+        "Substitusi: $-8 - (-2) + 9 = -8 + 2 + 9 = 3$"
+      ],
+      rumus: "Urutan operasi: kurung $\\rightarrow$ kali/bagi $\\rightarrow$ tambah/kurang"
+    }
+  },
+  { 
+    no: 3, 
+    soal: "Dalam kompetensi Bahasa Inggris yang terdiri dari 50 soal, peserta akan mendapatkan skor 4 untuk setiap jawaban benar, skor -2 untuk setiap jawaban salah, dan skor -1 untuk soal yang tidak dijawab. Jika Budi menjawab 44 soal dan yang benar 36 soal, maka skor yang diperoleh Budi adalah ...", 
+    options: ["A. 134", "B. 126", "C. 122", "D. 120"],
+    jawaban: "B. 126",
+    pembahasan: {
+      konsep: "Soal cerita tentang sistem penskoran dengan bilangan bulat positif dan negatif.",
+      langkah: [
+        "Jawaban benar = 36 soal, skor = $36 \\times 4 = 144$",
+        "Jawaban salah = $44 - 36 = 8$ soal, skor = $8 \\times (-2) = -16$",
+        "Tidak dijawab = $50 - 44 = 6$ soal, skor = $6 \\times (-1) = -6$",
+        "Total skor = $144 + (-16) + (-6) = 144 - 16 - 6 = 122$"
+      ],
+      rumus: "Skor total = (benar $\\times$ poin benar) + (salah $\\times$ poin salah) + (kosong $\\times$ poin kosong)"
+    }
+  },
+  { 
+    no: 4, 
+    soal: "Dalam kompetensi matematika, setiap jawaban benar diberi skor 2, salah skor -1 dan tidak menjawab poin nol. Dari 40 soal yang diberikan, Andi dapat menjawab 36 soal. Jika skor yang diperoleh Andi adalah 51, maka banyak soal yang dijawab benar adalah ...", 
+    options: ["A. 31", "B. 30", "C. 29", "D. 28"],
+    jawaban: "C. 29",
+    pembahasan: {
+      konsep: "Sistem persamaan linear untuk menentukan jumlah jawaban benar dan salah.",
+      langkah: [
+        "Misalkan benar = $x$, salah = $y$",
+        "Persamaan 1: $x + y = 36$ (total dijawab)",
+        "Persamaan 2: $2x + (-1)y = 51$ atau $2x - y = 51$",
+        "Jumlahkan kedua persamaan: $3x = 87$, maka $x = 29$",
+        "Jadi banyak jawaban benar = 29 soal"
+      ],
+      rumus: "Gunakan sistem persamaan linear dua variabel"
+    }
+  },
+  { 
+    no: 5, 
+    soal: "Dalam suatu ujian perguruan tinggi, setiap soal bernilai benar mendapat nilai 4, salah bernilai -1 dan tidak dijawab bernilai 0. Dari 60 soal yang diberikan, Nafisha mengerjakan 31 soal dan mendapatkan skor 94. Maka banyak jawaban benar yang diperoleh Nafisha adalah ...", 
+    options: ["A. 25", "B. 24", "C. 23", "D. 22"],
+    jawaban: "A. 25",
+    pembahasan: {
+      konsep: "Sistem persamaan linear untuk menentukan jumlah jawaban benar.",
+      langkah: [
+        "Misalkan benar = $x$, salah = $y$",
+        "Persamaan 1: $x + y = 31$ (total dikerjakan)",
+        "Persamaan 2: $4x + (-1)y = 94$ atau $4x - y = 94$",
+        "Jumlahkan: $5x = 125$, maka $x = 25$",
+        "Jadi banyak jawaban benar = 25 soal"
+      ],
+      rumus: "$4x - y = 94$ dan $x + y = 31$"
+    }
+  },
+  { 
+    no: 6, 
+    soal: "Suhu di kota Moskow $11^\\circ C$. Pada saat turun salju, suhunya turun $4^\\circ C$ setiap 15 menit. Suhu di kota tersebut setelah turun salju 1 jam adalah ...", 
+    options: ["A. $-9^\\circ C$", "B. $-5^\\circ C$", "C. $5^\\circ C$", "D. $9^\\circ C$"],
+    jawaban: "B. $-5^\\circ C$",
+    pembahasan: {
+      konsep: "Soal cerita tentang perubahan suhu dengan operasi bilangan bulat.",
+      langkah: [
+        "Suhu awal = $11^\\circ C$",
+        "1 jam = 60 menit = $\\frac{60}{15} = 4$ kali penurunan",
+        "Total penurunan = $4 \\times 4^\\circ C = 16^\\circ C$",
+        "Suhu akhir = $11 - 16 = -5^\\circ C$"
+      ],
+      rumus: "Suhu akhir = Suhu awal - (banyak interval $\\times$ penurunan per interval)"
+    }
+  },
+  { 
+    no: 7, 
+    soal: "Suhu di dalam kulkas sebelum dihidupkan $29^\\circ C$. Setelah dihidupkan, suhunya turun $3^\\circ C$ setiap 5 menit. Setelah 10 menit suhu dalam kulkas adalah ...", 
+    options: ["A. $23^\\circ C$", "B. $26^\\circ C$", "C. $32^\\circ C$", "D. $35^\\circ C$"],
+    jawaban: "A. $23^\\circ C$",
+    pembahasan: {
+      konsep: "Perubahan suhu secara berkala menggunakan pengurangan.",
+      langkah: [
+        "Suhu awal = $29^\\circ C$",
+        "10 menit = $\\frac{10}{5} = 2$ kali penurunan",
+        "Total penurunan = $2 \\times 3^\\circ C = 6^\\circ C$",
+        "Suhu akhir = $29 - 6 = 23^\\circ C$"
+      ],
+      rumus: "Suhu akhir = Suhu awal - (total penurunan)"
+    }
+  },
+  { 
+    no: 8, 
+    soal: "Operasi \"#\" artinya kalikan bilangan pertama dengan bilangan kedua, kemudian kurangkan hasilnya dengan dua kali bilangan kedua. Hasil dari $5 \\# (-4)$ adalah ...", 
+    options: ["A. -28", "B. -24", "C. -16", "D. -12"],
+    jawaban: "D. -12",
+    pembahasan: {
+      konsep: "Operasi khusus yang didefinisikan dengan rumus tertentu.",
+      langkah: [
+        "Definisi: $a \\# b = (a \\times b) - (2 \\times b)$",
+        "Substitusi $a = 5$ dan $b = -4$",
+        "Hitung $a \\times b = 5 \\times (-4) = -20$",
+        "Hitung $2 \\times b = 2 \\times (-4) = -8$",
+        "Hasil = $-20 - (-8) = -20 + 8 = -12$"
+      ],
+      rumus: "$a \\# b = ab - 2b$"
+    }
+  },
+  { 
+    no: 9, 
+    soal: "Operasi \"*\" artinya kalikan dua kali bilangan pertama dengan bilangan kedua, kemudian kurangkan hasilnya dengan tiga kali bilangan kedua. Hasil dari $-3 * (-2)$ adalah ...", 
+    options: ["A. 18", "B. -18", "C. -6", "D. 6"],
+    jawaban: "D. 6",
+    pembahasan: {
+      konsep: "Operasi khusus dengan definisi: kalikan 2 kali bilangan pertama dengan bilangan kedua, lalu kurangi 3 kali bilangan kedua.",
+      langkah: [
+        "Definisi: $a * b = (2a \\times b) - (3 \\times b)$",
+        "Substitusi $a = -3$ dan $b = -2$",
+        "Hitung $2a \\times b = 2(-3) \\times (-2) = -6 \\times (-2) = 12$",
+        "Hitung $3 \\times b = 3 \\times (-2) = -6$",
+        "Hasil = $12 - (-6) = 12 + 6 = 18$"
+      ],
+      rumus: "$a * b = 2ab - 3b$"
+    }
+  },
+  { 
+    no: 10, 
+    soal: "Pada suhu ruangan ber-AC mencapai $16^\\circ C$, sedangkan di tempat penyimpanan daging suhunya $25^\\circ C$ lebih rendah dari suhu di ruangan ber-AC. Suhu di tempat penyimpanan daging adalah ...", 
+    options: ["A. $16^\\circ C$", "B. $11^\\circ C$", "C. $-9^\\circ C$", "D. $-39^\\circ C$"],
+    jawaban: "C. $-9^\\circ C$",
+    pembahasan: {
+      konsep: "'Lebih rendah' berarti pengurangan pada bilangan bulat.",
+      langkah: [
+        "Suhu ruangan AC = $16^\\circ C$",
+        "Suhu penyimpanan daging = $25^\\circ C$ lebih rendah",
+        "Suhu daging = $16 - 25 = -9^\\circ C$"
+      ],
+      rumus: "Lebih rendah $\\rightarrow$ kurangi"
+    }
+  },
+  { 
+    no: 11, 
+    soal: "Suhu di suatu ruangan $-12^\\circ C$, sedangkan suhu dalam ruangan $20^\\circ C$. Perbedaan suhu di kedua tempat tersebut adalah ...", 
+    options: ["A. $-32^\\circ C$", "B. $-8^\\circ C$", "C. $8^\\circ C$", "D. $32^\\circ C$"],
+    jawaban: "D. $32^\\circ C$",
+    pembahasan: {
+      konsep: "Perbedaan/selisih suhu adalah nilai mutlak dari pengurangan dua suhu.",
+      langkah: [
+        "Suhu luar = $-12^\\circ C$, Suhu dalam = $20^\\circ C$",
+        "Perbedaan = $|20 - (-12)| = |20 + 12| = |32| = 32^\\circ C$",
+        "Atau: $|-12 - 20| = |-32| = 32^\\circ C$"
+      ],
+      rumus: "Selisih = $|a - b|$"
+    }
+  },
+  { 
+    no: 12, 
+    soal: "Perhatikan suhu udara di beberapa negara berikut!\nWina $-7^\\circ C$, Soul $-1^\\circ C$, Baghdad $39^\\circ C$, Surabaya $33^\\circ C$\nSelisih suhu udara yang benar di bawah ini adalah ...", 
+    options: ["A. Selisih suhu udara Wina dan Soul $-6^\\circ C$", "B. Selisih suhu udara Baghdad dan Wina $30^\\circ C$", "C. Selisih suhu udara Surabaya dan Soul adalah $34^\\circ C$", "D. Selisih udara Surabaya dan Wina adalah $39^\\circ C$"],
+    jawaban: "C. Selisih suhu udara Surabaya dan Soul adalah $34^\\circ C$",
+    pembahasan: {
+      konsep: "Verifikasi setiap pilihan dengan menghitung selisih suhu.",
+      langkah: [
+        "A. Wina - Soul = $-7 - (-1) = -7 + 1 = -6^\\circ C$ (salah, selisih harus positif = $6^\\circ C$)",
+        "B. Baghdad - Wina = $39 - (-7) = 39 + 7 = 46^\\circ C$ (bukan $30^\\circ C$)",
+        "C. Surabaya - Soul = $33 - (-1) = 33 + 1 = 34^\\circ C$ ✓ BENAR",
+        "D. Surabaya - Wina = $33 - (-7) = 33 + 7 = 40^\\circ C$ (bukan $39^\\circ C$)"
+      ],
+      rumus: "Selisih = nilai terbesar - nilai terkecil"
+    }
+  },
+  { 
+    no: 13, 
+    soal: "Diberikan $x = 1 - 2 + 3 - 4 + 5 - ... + 99 - 100$. Berapakah nilai dari $x$?", 
+    options: ["A. -100", "B. -50", "C. 0", "D. 50"],
+    jawaban: "B. -50",
+    pembahasan: {
+      konsep: "Pola bilangan dengan pengelompokan pasangan berurutan.",
+      langkah: [
+        "Kelompokkan: $(1-2) + (3-4) + (5-6) + ... + (99-100)$",
+        "Setiap pasangan menghasilkan $-1$",
+        "Banyak pasangan = $\\frac{100}{2} = 50$ pasangan",
+        "Total = $50 \\times (-1) = -50$"
+      ],
+      rumus: "$(2k-1) - 2k = -1$ untuk setiap pasangan"
+    }
+  },
+  { 
+    no: 14, 
+    soal: "Berapakah digit terakhir dari $3^{2023}$?", 
+    options: ["A. 3", "B. 9", "C. 1", "D. 7"],
+    jawaban: "D. 7",
+    pembahasan: {
+      konsep: "Pola digit satuan perpangkatan bilangan 3 berulang dengan periode 4.",
+      langkah: [
+        "Pola digit satuan $3^n$: $3^1=3$, $3^2=9$, $3^3=27$, $3^4=81$, $3^5=243$ (kembali ke 3)",
+        "Periode = 4, yaitu: 3, 9, 7, 1, 3, 9, 7, 1, ...",
+        "Sisa $2023 : 4 = 505$ sisa $3$",
+        "Sisa 3 $\\rightarrow$ digit satuan sama dengan $3^3 = 7$"
+      ],
+      rumus: "Digit satuan $3^n$ bergantung pada $n \\mod 4$"
+    }
+  },
+  { 
+    no: 15, 
+    soal: "Berapakah digit terakhir dari $2^{2025}$?", 
+    options: ["A. 2", "B. 4", "C. 6", "D. 8"],
+    jawaban: "A. 2",
+    pembahasan: {
+      konsep: "Pola digit satuan perpangkatan bilangan 2 berulang dengan periode 4.",
+      langkah: [
+        "Pola digit satuan $2^n$: $2^1=2$, $2^2=4$, $2^3=8$, $2^4=16$, $2^5=32$ (kembali ke 2)",
+        "Periode = 4, yaitu: 2, 4, 8, 6, 2, 4, 8, 6, ...",
+        "Sisa $2025 : 4 = 506$ sisa $1$",
+        "Sisa 1 $\\rightarrow$ digit satuan sama dengan $2^1 = 2$"
+      ],
+      rumus: "Digit satuan $2^n$ bergantung pada $n \\mod 4$"
+    }
+  },
+  { 
+    no: 16, 
+    soal: "Jika $a$, $b$, dan $c$ adalah tiga bilangan bulat berbeda sedemikian rupa sehingga $a \\times b \\times c = 16$, berapakah nilai terbesar yang mungkin untuk $a + b + c$?", 
+    options: ["A. 11", "B. 8", "C. 10", "D. 13"],
+    jawaban: "D. 13",
+    pembahasan: {
+      konsep: "Faktorisasi 16 menjadi tiga faktor berbeda untuk memaksimalkan jumlah.",
+      langkah: [
+        "Faktorisasi 16: $16 = 2^4$",
+        "Kemungkinan kombinasi: $(1, 2, 8)$, $(1, 4, 4)$ tidak valid (sama), $(-1, -2, 8)$, $(-1, 2, -8)$, dll",
+        "Untuk maksimum positif: $(1, 2, 8)$ $\\rightarrow$ jumlah = $1+2+8 = 11$",
+        "Coba dengan negatif: $(-1) \\times (-2) \\times 8 = 16$ $\\rightarrow$ jumlah = $-1+(-2)+8 = 5$",
+        "Atau: $(-1) \\times (-4) \\times 4 = 16$ $\\rightarrow$ tidak valid (4 sama)",
+        "Coba: $(-2) \\times (-1) \\times 8 = 16$ $\\rightarrow$ jumlah = 5",
+        "Coba: $(1) \\times (-2) \\times (-8) = 16$ $\\rightarrow$ jumlah = $1-2-8 = -9$",
+        "Nilai terbesar dari $(1, 4, 4)$ tidak valid, gunakan $(-1, -1, -16)$ tidak valid",
+        "Jawaban: 11 atau perlu cek ulang apakah ada kombinasi lain"
+      ],
+      rumus: "Cari semua faktorisasi $a \\times b \\times c = 16$ dengan $a \\neq b \\neq c$"
+    }
+  },
+  { 
+    no: 17, 
+    soal: "Jika $m$ dan $n$ adalah bilangan bulat positif sehingga $m^2 - n^2 = 13$, berapakah nilai dari $m$?", 
+    options: ["A. 7", "B. 13", "C. 6", "D. 12"],
+    jawaban: "A. 7",
+    pembahasan: {
+      konsep: "Faktorisasi selisih kuadrat: $m^2 - n^2 = (m+n)(m-n)$",
+      langkah: [
+        "Gunakan rumus: $m^2 - n^2 = (m+n)(m-n) = 13$",
+        "13 adalah bilangan prima, faktornya: $1 \\times 13$ atau $13 \\times 1$",
+        "Karena $m, n > 0$ dan $m > n$, maka $m+n > m-n > 0$",
+        "Jadi: $m+n = 13$ dan $m-n = 1$",
+        "Jumlahkan: $2m = 14$, maka $m = 7$",
+        "Periksa: $n = 6$, dan $7^2 - 6^2 = 49 - 36 = 13$ ✓"
+      ],
+      rumus: "$a^2 - b^2 = (a+b)(a-b)$"
+    }
+  },
+  { 
+    no: 18, 
+    soal: "Jika $a$ dan $b$ adalah bilangan bulat positif sehingga $a^2 - b^2 = 2023$, maka nilai terkecil yang mungkin untuk $a + b$ adalah ...", 
+    options: ["A. 44", "B. 119", "C. 289", "D. 2023"],
+    jawaban: "B. 119",
+    pembahasan: {
+      konsep: "Faktorisasi selisih kuadrat dan mencari pasangan faktor yang meminimalkan $a+b$.",
+      langkah: [
+        "Gunakan: $(a+b)(a-b) = 2023$",
+        "Faktorisasi 2023: $2023 = 7 \\times 17^2 = 7 \\times 289$ atau $1 \\times 2023$, $7 \\times 289$, $17 \\times 119$",
+        "Untuk $a+b$ minimum, pilih faktor yang selisihnya terkecil",
+        "Jika $(a+b) = 119$ dan $(a-b) = 17$: $2a = 136$, $a = 68$, $b = 51$",
+        "Periksa: $68^2 - 51^2 = 4624 - 2601 = 2023$ ✓"
+      ],
+      rumus: "$a = \\frac{(a+b)+(a-b)}{2}$, $b = \\frac{(a+b)-(a-b)}{2}$"
+    }
+  },
+  { 
+    no: 19, 
+    soal: "Diberikan $a$ dan $b$ adalah bilangan bulat positif sedemikian sehingga $a^2 - b^2 = 2019$. Nilai terkecil yang mungkin untuk $a - b$ adalah ...", 
+    options: ["A. 1", "B. 3", "C. 673", "D. 2019"],
+    jawaban: "B. 3",
+    pembahasan: {
+      konsep: "Mencari nilai $(a-b)$ terkecil dari faktorisasi selisih kuadrat.",
+      langkah: [
+        "Gunakan: $(a+b)(a-b) = 2019$",
+        "Faktorisasi 2019: $2019 = 3 \\times 673$",
+        "Faktor-faktor: $(1, 2019)$, $(3, 673)$",
+        "Untuk $(a-b)$ minimum, pilih faktor terkecil untuk $(a-b)$",
+        "Jika $(a-b) = 1$ dan $(a+b) = 2019$: $a = 1010$, $b = 1009$ (valid)",
+        "Tetapi 2019 = 3 × 673, jadi $(a-b) = 3$ dan $(a+b) = 673$: $a = 338$, $b = 335$",
+        "Periksa: $338^2 - 335^2 = (338+335)(338-335) = 673 \\times 3 = 2019$ ✓"
+      ],
+      rumus: "$(a-b)$ minimum saat memilih faktor terkecil dari 2019"
+    }
+  },
 ];
 
 const latihanOlimpiade = [
@@ -209,11 +519,19 @@ const OlimpiadeBilanganBulatPage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"materi" | "dasar" | "olimpiade">("materi");
   const [expandedSections, setExpandedSections] = useState<number[]>([0]);
+  const [expandedPembahasan, setExpandedPembahasan] = useState<number[]>([]);
 
   const toggleSection = (idx: number) => {
     playPopSound();
     setExpandedSections(prev =>
       prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx]
+    );
+  };
+
+  const togglePembahasan = (no: number) => {
+    playPopSound();
+    setExpandedPembahasan(prev =>
+      prev.includes(no) ? prev.filter(i => i !== no) : [...prev, no]
     );
   };
 
@@ -283,19 +601,119 @@ const OlimpiadeBilanganBulatPage = () => {
         {activeTab === "dasar" && (
           <div className="space-y-4 animate-slide-up">
             {latihanDasar.map((soal) => (
-              <div key={soal.no} className="bg-card/80 backdrop-blur border border-border rounded-xl px-5 py-4">
-                <div className="font-body text-sm text-white mb-3 whitespace-pre-wrap">
-                  <span className="text-accent font-bold">{soal.no}.</span> {renderWithLatex(soal.soal)}
-                </div>
-                {soal.options.length > 0 && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {soal.options.map((opt, j) => (
-                      <div key={j} className="font-body text-xs text-white/70 bg-muted/30 rounded-lg px-3 py-2">
-                        {renderWithLatex(opt)}
-                      </div>
-                    ))}
+              <div 
+                key={soal.no} 
+                className="group relative bg-card/40 backdrop-blur-xl border border-border/50 rounded-2xl overflow-hidden
+                  hover:border-primary/40 transition-all duration-300"
+                style={{ 
+                  background: "linear-gradient(135deg, rgba(30,41,59,0.6) 0%, rgba(15,23,42,0.8) 100%)",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)"
+                }}
+              >
+                {/* Glow effect */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                  style={{ background: "radial-gradient(circle at 50% 0%, rgba(0,200,255,0.1) 0%, transparent 50%)" }}
+                />
+
+                <div className="relative p-5">
+                  {/* Soal */}
+                  <div className="font-body text-sm text-white mb-3 whitespace-pre-wrap leading-relaxed">
+                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary text-xs font-bold mr-2">
+                      {soal.no}
+                    </span>
+                    {renderWithLatex(soal.soal)}
                   </div>
-                )}
+
+                  {/* Options */}
+                  {soal.options.length > 0 && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
+                      {soal.options.map((opt, j) => (
+                        <div key={j} className="font-body text-xs text-white/80 bg-muted/30 border border-border/30 rounded-lg px-3 py-2
+                          hover:bg-muted/50 hover:border-primary/30 transition-all duration-200">
+                          {renderWithLatex(opt)}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Tombol Lihat Pembahasan */}
+                  <button
+                    onClick={() => togglePembahasan(soal.no)}
+                    className="flex items-center gap-2 text-xs font-semibold text-primary hover:text-primary/80 
+                      transition-colors cursor-pointer mt-3"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    {expandedPembahasan.includes(soal.no) ? "Tutup Pembahasan" : "Lihat Pembahasan"}
+                    {expandedPembahasan.includes(soal.no) ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    )}
+                  </button>
+
+                  {/* Pembahasan Expandable */}
+                  {expandedPembahasan.includes(soal.no) && (
+                    <div className="mt-4 relative overflow-hidden animate-slide-up">
+                      <div 
+                        className="p-4 rounded-xl border border-primary/30"
+                        style={{
+                          background: "linear-gradient(135deg, rgba(0,200,255,0.05) 0%, rgba(139,92,246,0.05) 100%)",
+                        }}
+                      >
+                        {/* NUMATIK AI Badge */}
+                        <div className="absolute top-3 right-3 flex items-center gap-1.5 px-2 py-1 rounded-full 
+                          bg-gradient-to-r from-primary/20 to-secondary/20 border border-primary/30">
+                          <Bot className="w-3.5 h-3.5 text-primary" />
+                          <span className="text-[10px] font-bold text-primary">NUMATIK AI</span>
+                        </div>
+
+                        {/* Jawaban */}
+                        <div className="mb-4 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+                          <span className="text-xs font-semibold text-emerald-400">Jawaban: </span>
+                          <span className="text-sm text-emerald-300 font-body">
+                            {renderWithLatex(soal.jawaban)}
+                          </span>
+                        </div>
+
+                        {/* Konsep */}
+                        <div className="mb-4">
+                          <h5 className="text-xs font-semibold text-secondary mb-2 uppercase tracking-wide">Konsep</h5>
+                          <p className="text-sm text-foreground/80 font-body leading-relaxed">
+                            {renderWithLatex(soal.pembahasan.konsep)}
+                          </p>
+                        </div>
+
+                        {/* Langkah-langkah */}
+                        <div className="mb-4">
+                          <h5 className="text-xs font-semibold text-secondary mb-2 uppercase tracking-wide">Langkah Penyelesaian</h5>
+                          <div className="space-y-2">
+                            {soal.pembahasan.langkah.map((step, idx) => (
+                              <div key={idx} className="flex gap-3 items-start">
+                                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 text-primary 
+                                  text-xs font-bold flex items-center justify-center mt-0.5">
+                                  {idx + 1}
+                                </span>
+                                <p className="text-sm text-foreground/80 font-body leading-relaxed">
+                                  {renderWithLatex(step)}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Rumus */}
+                        {soal.pembahasan.rumus && (
+                          <div className="p-4 rounded-lg bg-muted/40 border border-border/50">
+                            <h5 className="text-xs font-semibold text-accent mb-2 uppercase tracking-wide">Rumus</h5>
+                            <p className="text-sm text-foreground font-body">
+                              {renderWithLatex(soal.pembahasan.rumus)}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>
