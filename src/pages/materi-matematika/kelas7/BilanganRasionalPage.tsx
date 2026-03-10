@@ -5,18 +5,18 @@ import { BookOpen, ChevronRight } from "lucide-react";
 import { playPopSound } from "@/hooks/useAudio";
 
 const subtopics = [
-  "ARTI PECAHAN, PECAHAN SENILAI DAN MEMBANDINGKAN PECAHAN",
-  "PECAHAN CAMPURAN DAN PERSEN",
-  "PENJUMLAHAN PECAHAN",
-  "PENGURANGAN PECAHAN",
-  "PERKALIAN PECAHAN",
-  "PEMBAGIAN PECAHAN",
-  "BENTUK DESIMAL",
-  "PENJUMLAHAN BENTUK DESIMAL",
-  "PENGURANGAN BENTUK DESIMAL",
-  "PERKALIAN BENTUK DESIMAL",
-  "PEMBAGIAN BENTUK DESIMAL",
-  "PEMBULATAN BENTUK DESIMAL",
+  { name: "ARTI PECAHAN, PECAHAN SENILAI DAN MEMBANDINGKAN PECAHAN", path: "/materi-matematika/kelas-7/bilangan-rasional/arti-pecahan" },
+  { name: "PECAHAN CAMPURAN DAN PERSEN", path: null },
+  { name: "PENJUMLAHAN PECAHAN", path: null },
+  { name: "PENGURANGAN PECAHAN", path: null },
+  { name: "PERKALIAN PECAHAN", path: null },
+  { name: "PEMBAGIAN PECAHAN", path: null },
+  { name: "BENTUK DESIMAL", path: null },
+  { name: "PENJUMLAHAN BENTUK DESIMAL", path: null },
+  { name: "PENGURANGAN BENTUK DESIMAL", path: null },
+  { name: "PERKALIAN BENTUK DESIMAL", path: null },
+  { name: "PEMBAGIAN BENTUK DESIMAL", path: null },
+  { name: "PEMBULATAN BENTUK DESIMAL", path: null },
 ];
 
 const BilanganRasionalPage = () => {
@@ -36,15 +36,19 @@ const BilanganRasionalPage = () => {
         <div className="flex flex-col gap-3 animate-slide-up">
           {subtopics.map((subtopic, i) => (
             <button
-              key={subtopic}
-              onClick={() => playPopSound()}
-              className="group flex items-center gap-4 bg-card/80 backdrop-blur border border-border rounded-xl px-5 py-4
+              key={subtopic.name}
+              onClick={() => { 
+                playPopSound(); 
+                if (subtopic.path) navigate(subtopic.path);
+              }}
+              className={`group flex items-center gap-4 bg-card/80 backdrop-blur border border-border rounded-xl px-5 py-4
                 hover:border-primary/60 transition-all duration-300
-                cursor-pointer text-left animate-slide-up"
+                text-left animate-slide-up ${subtopic.path ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'}`}
               style={{ animationDelay: `${i * 0.03}s` }}
             >
               <ChevronRight className="w-4 h-4 text-primary shrink-0 group-hover:translate-x-1 transition-transform" />
-              <span className="font-body text-sm text-white">{subtopic}</span>
+              <span className="font-body text-sm text-white">{subtopic.name}</span>
+              {!subtopic.path && <span className="ml-auto text-xs text-white/40 font-body">Segera Hadir</span>}
             </button>
           ))}
         </div>
